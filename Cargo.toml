@@ -1,6 +1,3 @@
-[workspace]
-members = ["mozlz4-bin"]
-
 [package]
 name = "mozlz4"
 version = "0.2.0"
