@@ -9,4 +9,4 @@ edition = "2018"
 
 [dependencies]
 byteorder = "1"
-mozlz4-sys = { path = "mozlz4-sys" }
+mozlz4-sys = "0.1"
