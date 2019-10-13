@@ -1,0 +1,11 @@
+[package]
+name = "mozlz4-bin"
+version = "0.1.0"
+authors = ["Mitchell Ferree (BeatButton) <thebeatbutton@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = "2.30"
+mozlz4 = {path = ".."}

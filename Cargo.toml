@@ -1,3 +1,6 @@
+[workspace]
+members = ["mozlz4-bin", "mozlz4-sys"]
+
 [package]
 name = "mozlz4"
 version = "0.1.0"
@@ -5,6 +8,5 @@ authors = ["Justin Wong <jusw85@hotmail.com>", "BeatButton <thebeatbutton@gmail.
 edition = "2018"
 
 [dependencies]
-clap = "2.30"
 byteorder = "1"
 mozlz4-sys = { path = "mozlz4-sys" }

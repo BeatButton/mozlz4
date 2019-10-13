@@ -1,9 +1,7 @@
 use clap::{crate_version, App, Arg};
+use mozlz4::*;
 
 use std::{fs::File, io::{Read, Write}};
-
-mod lib;
-use lib::*;
 
 
 fn main() -> Result<(), String> {
