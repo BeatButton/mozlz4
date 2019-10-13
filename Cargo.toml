@@ -1,11 +1,16 @@
 [workspace]
-members = ["mozlz4-bin", "mozlz4-sys"]
+members = ["mozlz4-bin"]
 
 [package]
 name = "mozlz4"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Justin Wong <jusw85@hotmail.com>", "BeatButton <thebeatbutton@gmail.com>"]
 edition = "2018"
+license = "MIT"
+description = "Decompress / compress mozlz4 files, specifically search.json.mozlz4 in Firefox."
+homepage = "https://github.com/beatbutton/mozlz4"
+documentation = "https://docs.rs/mozlz4"
+repository = "https://github.com/beatbutton/mozlz4"
 
 [dependencies]
 byteorder = "1"
