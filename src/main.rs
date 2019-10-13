@@ -1,5 +1,4 @@
 use clap::{crate_version, App, Arg};
-use error_chain::ChainedError;
 
 use std::{fs::File, io::{Read, Write}};
 
@@ -7,15 +6,7 @@ mod lib;
 use lib::*;
 
 
-fn main() {
-    if let Err(ref e) = run() {
-        
-        eprintln!("{}", e.display_chain());
-        std::process::exit(1);
-    }
-}
-
-fn run() -> Result<()> {
+fn main() -> Result<(), String> {
     let matches = App::new("mozlz4")
         .version(crate_version!())
         .author("Justin Wong")
@@ -54,41 +45,41 @@ fn run() -> Result<()> {
     let ibuffer = read_to_buffer(ifilename)?;
 
     let obuffer = if !do_compress {
-        decompress(ibuffer).chain_err(|| format!("Failed to decompress"))?
+        decompress(ibuffer).or(Err("Failed to decompress"))
     } else {
-        compress(ibuffer).chain_err(|| format!("Failed to compress"))?
-    };
+        compress(ibuffer).or(Err("Failed to compress"))
+    }?;
     write_to_file(obuffer, ofilename)?;
 
     Ok(())
 }
 
-fn write_to_file(obuffer: Vec<u8>, ofilename: &str) -> Result<()> {
+fn write_to_file(obuffer: Vec<u8>, ofilename: &str) -> Result<(), String> {
     let mut ofile: Box<dyn Write> = if ofilename == "-" {
         Box::new(std::io::stdout())
     } else {
         Box::new(
-            File::create(ofilename).chain_err(|| format!("Unable to create file {}", ofilename))?,
+            File::create(ofilename).or_else(|_| Err(format!("Unable to create file {}", ofilename)))?,
         )
     };
 
     ofile
         .write_all(&obuffer[..])
-        .chain_err(|| format!("Unable to write to file {}", ofilename))?;
+        .or_else(|_| Err(format!("Unable to write to file {}", ofilename)))?;
     Ok(())
 }
 
-fn read_to_buffer(ifilename: &str) -> Result<(Vec<u8>)> {
+fn read_to_buffer(ifilename: &str) -> Result<Vec<u8>, String> {
     let mut ifile: Box<dyn Read> = if ifilename == "-" {
         Box::new(std::io::stdin())
     } else {
-        Box::new(File::open(ifilename).chain_err(|| format!("Unable to open file {}", ifilename))?)
+        Box::new(File::open(ifilename).or_else(|_| Err(format!("Unable to open file {}", ifilename)))?)
     };
 
     let mut ibuffer: Vec<u8> = Vec::new();
     let bytes_read = ifile
         .read_to_end(&mut ibuffer)
-        .chain_err(|| format!("Unable to read file {}", ifilename))?;
+        .or_else(|_| Err(format!("Unable to read file {}", ifilename)))?;
     assert_eq!(ibuffer.len(), bytes_read);
     Ok(ibuffer)
 }

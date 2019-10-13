@@ -1,22 +1,13 @@
 use byteorder::{ByteOrder, LittleEndian, WriteBytesExt};
-use error_chain::bail;
 use mozlz4_sys::*;
 
-pub mod errors {
-    use error_chain::{
-        error_chain, error_chain_processing, impl_error_chain_kind, impl_error_chain_processed,
-        impl_extract_backtrace,
-    };
-    error_chain! {}
-}
-pub use errors::*;
 
 const MAGIC_NUMBER: &[u8] = b"mozLz40\0";
 
-pub fn decompress(ibuffer: Vec<u8>) -> Result<(Vec<u8>)> {
+pub fn decompress(ibuffer: Vec<u8>) -> Result<Vec<u8>, String> {
     let magic_number_len = MAGIC_NUMBER.len();
     if ibuffer.len() < (magic_number_len + 4) || !ibuffer.starts_with(MAGIC_NUMBER) {
-        bail!("Unrecognized input file")
+        return Err("Unrecognized input file".into())
     }
 
     let decompressed_size = ibuffer
@@ -35,14 +26,14 @@ pub fn decompress(ibuffer: Vec<u8>) -> Result<(Vec<u8>)> {
             decompressed_size as i32,
         );
         if bytes_decompressed < 0 {
-            bail!("Malformed input file")
+            return Err("Malformed input file".into())
         }
         obuffer.set_len(bytes_decompressed as usize);
     }
     Ok(obuffer)
 }
 
-pub fn compress(ibuffer: Vec<u8>) -> Result<(Vec<u8>)> {
+pub fn compress(ibuffer: Vec<u8>) -> Result<Vec<u8>, String> {
     let uncompressed_size = ibuffer.len();
     let compress_bound = unsafe { LZ4_compressBound(uncompressed_size as i32) as usize };
 
@@ -61,7 +52,7 @@ pub fn compress(ibuffer: Vec<u8>) -> Result<(Vec<u8>)> {
             compress_bound as i32,
         );
         if bytes_compressed <= 0 {
-            bail!("Compression failed")
+            return Err("Compression failed".into())
         }
         obuffer.set_len(magic_number_len + 4 + bytes_compressed as usize);
     }
