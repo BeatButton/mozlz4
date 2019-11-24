@@ -1,6 +1,6 @@
 [package]
 name = "mozlz4"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Justin Wong <jusw85@hotmail.com>", "BeatButton <thebeatbutton@gmail.com>"]
 edition = "2018"
 license = "MIT"
