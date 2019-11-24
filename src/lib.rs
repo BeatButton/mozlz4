@@ -20,8 +20,8 @@ pub fn decompress(ibuffer: Vec<u8>) -> Result<Vec<u8>, String> {
 
     unsafe {
         let bytes_decompressed = LZ4_decompress_safe(
-            block.as_ptr() as *const i8,
-            obuffer.as_mut_ptr() as *mut i8,
+            block.as_ptr() as *const _,
+            obuffer.as_mut_ptr() as *mut _,
             block.len() as i32,
             decompressed_size as i32,
         );
@@ -46,8 +46,8 @@ pub fn compress(ibuffer: Vec<u8>) -> Result<Vec<u8>, String> {
 
     unsafe {
         let bytes_compressed = LZ4_compress_default(
-            ibuffer.as_ptr() as *const i8,
-            obuffer[(magic_number_len + 4)..].as_mut_ptr() as *mut i8,
+            ibuffer.as_ptr() as *const _,
+            obuffer[(magic_number_len + 4)..].as_mut_ptr() as *mut _,
             uncompressed_size as i32,
             compress_bound as i32,
         );
